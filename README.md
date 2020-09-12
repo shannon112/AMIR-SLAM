@@ -4,7 +4,7 @@
 
 Our aim is to design a SLAM system that is specifically for mobile manipulators and can be adopt into autonomous mobile manipulation which is the most important foundation of lots of industrial applications such as performing pick and place tasks between discrete work stations in factories. The first objective is to propose a new SLAM system leveraging the information from the AMIR such as RGB-D data, 2D laser scan data, inertial data and transformation data to get the best quality on both 2D and 3D maps among existing methods which can be adopted to an AMIR. The second objective is to adopt our SLAM system to mobile manipulation, making the mobile manipulation between discrete work stations autonomous without colliding on obstacles. In the result, our whole system based on an AMIR is shown figure below, the robot can move ubiquitously in the indoor environment and easily complete the pick and place task between discrete work stations.
 
-<img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/mapping_result.png?token=AF244QDAVMPGDCUASHDBAXK7MW5S6" width="900">
+<img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/mapping_result.png?token=AF244QDAVMPGDCUASHDBAXK7MW5S6" width="840">
 
 ## Related Publication
 - R. C. Luo, S. L. Lee, Y. C. Wen and C. H. Hsu, "Modular ROS Based Autonomous Mobile Industrial Robot System for Automated Intelligent Manufacturing Applications," 2020 IEEE/ASME International Conference on Advanced Intelligent Mechatronics (AIM), Boston, MA, USA, 2020, pp. 1673-1678, doi: 10.1109/AIM43001.2020.9158800.
@@ -19,4 +19,4 @@ Our aim is to design a SLAM system that is specifically for mobile manipulators 
 
 ## 4. System Overview & Algorithm Walkthrough for Tuning
 
-<img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/flow_chart_high_level.png?token=AF244QB56G7ACOJAAUJBCB27MW5VW" width="450">　<img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/flow_chart_low_level.png?token=AF244QC7TNT2MOWBN23J7C27MW5V2" width="450">
+<img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/flow_chart_high_level.png?token=AF244QB56G7ACOJAAUJBCB27MW5VW" width="410">　<img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/flow_chart_low_level.png?token=AF244QC7TNT2MOWBN23J7C27MW5V2" width="410">
