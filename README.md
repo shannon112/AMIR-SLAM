@@ -7,6 +7,7 @@ Our aim is to design a SLAM system that is specifically for mobile manipulators 
 <img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/mapping_result.png?token=AF244QDAVMPGDCUASHDBAXK7MW5S6" width="840">
 
 ## Related Publication
+*Since a lot of time and effort has gone into the development, please cite at least one of the following publications if you are using our work for your own research:*
 - R. C. Luo, S. L. Lee, Y. C. Wen and C. H. Hsu, "Modular ROS Based Autonomous Mobile Industrial Robot System for Automated Intelligent Manufacturing Applications," 2020 IEEE/ASME International Conference on Advanced Intelligent Mechatronics (AIM), Boston, MA, USA, 2020, pp. 1673-1678, doi: 10.1109/AIM43001.2020.9158800.
 - S. L. Lee, "Autonomous Mobile Industrial Robot with Multi-Sensor Fusion Based Simultaneous Localization and Mapping for Intelligent Service Applications," 2020 National Taiwan University Master Thesis, Taipei, Taiwan, 2020, doi: 10.6342/NTU202003847
 - R. C. Luo and S. L. Lee, "Multi-Sensor Based Simultaneous Localization and Mapping System for Autonomous Mobile Industrial Robotic Applications," in IEEE Access, 2020. (Submitted)
@@ -20,3 +21,10 @@ Our aim is to design a SLAM system that is specifically for mobile manipulators 
 ## 4. System Overview & Algorithm Walkthrough for Tuning
 
 <img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/flow_chart_high_level.png?token=AF244QB56G7ACOJAAUJBCB27MW5VW" width="410">　<img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/flow_chart_low_level.png?token=AF244QC7TNT2MOWBN23J7C27MW5V2" width="410">
+
+## License
+All the packages are distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+AMIR-SLAM is licenced under Apache-2.0 License.
+
+## Acknowledgement
+AMIR-SLAM is based on Cartographer SLAM (Hess, Wolfgang, Damon Kohler, Holger Rapp, and Daniel Andor. "Real-time loop closure in 2D LIDAR SLAM.")
