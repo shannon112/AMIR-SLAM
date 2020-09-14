@@ -2,7 +2,7 @@
 
 <img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/system_overview.png?token=AF244QECXSZSGSA4QIKZMY27MW5NE" width="640">
 
-Our aim is to design a SLAM system that is specifically for mobile manipulators and can be adopt into autonomous mobile manipulation which is the most important foundation of lots of industrial applications such as performing pick and place tasks between discrete work stations in factories. The first objective is to propose a new SLAM system leveraging the information from the AMIR such as RGB-D data, 2D laser scan data, inertial data and transformation data to get the best quality on both 2D and 3D maps among existing methods which can be adopted to an AMIR. The second objective is to adopt our SLAM system to mobile manipulation, making the mobile manipulation between discrete work stations autonomous without colliding on obstacles. In the result, our whole system based on an AMIR is shown figure below, the robot can move ubiquitously in the indoor environment and easily complete the pick and place task between discrete work stations.
+discription
 
 <img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/mapping_result.png?token=AF244QDAVMPGDCUASHDBAXK7MW5S6" width="840">
 
@@ -14,9 +14,63 @@ Our aim is to design a SLAM system that is specifically for mobile manipulators 
 
 ## 1. Prerequisites
 
+Build from source:
+- cartographer: https://github.com/shannon112/cartographer/tree/AMIR-SLAM
+- cartographer_ros: https://github.com/shannon112/cartographer_ros/tree/mit_stata_dataset
+- ira_laser_tool: https://github.com/shannon112/ira_laser_tools/tree/master
+- ceres-solver: https://github.com/shannon112/ceres-solver/tree/testing_1.13.0
+- ros_odometry_visualizer: https://github.com/shannon112/ros_odometry_visualizer/tree/master (for ploting fig)
+- rgbdslamv2: https://github.com/shannon112/rgbdslamv2_ros_d435/tree/kinetic  (for comparison)
+- scorpio_v2: https://github.com/shannon112/scorpio_v2/tree/master (for real robot)
+- moveit_extension: https://github.com/shannon112/Moveit-External-Octomap-Updater/tree/master (for autonomous mobile manipulation)
+
+Build with apt:
+- ros-kinetic-rtabmap, ros-kinetic-rtabmap-ros, etc.
+
+Dataset:
+- MIT Stata Center Data Set: https://projects.csail.mit.edu/stata/downloads.php (2012-04-06-11-15-29.bag)
+- Our own dataset: https://drive.google.com/drive/folders/1QCrg-WJSRdKY0BwEpo2rg7WaILU0T1es?usp=sharing
+
 ## 2. Building Project
+```
+ catkin_make_isolated --use-ninja -j8
+```
 
 ## 3. Examples
+Run mapping with MIT STATA Center Data Set or our own dataset:
+```
+roslaunch cartographer_ros demo_amirslam_mit.launch bag_filenames:=/home/shannon/Downloads/mit19-2012-04-06-11-15-29.bag 
+roslaunch cartographer_ros demo_amirslam_our.launch bag_filenames:=/home/shannon/Storage/iros_2.bag
+
+rosrun octomap_server submap3d_server_node cloud_in:=/camera/depth_registered/points frame_id:=/map
+rosrun octomap_server submap3d_visualizer_node frame_id:=/map
+rosrun octomap_server submap3d_optimizer_node frame_id=/map
+python amirslam_extractor.py 
+```
+
+Save mapping result:
+```
+# save cartographer state
+rosservice call /finish_trajectory "trajectory_id: 0"
+rosservice call /write_state "{filename: '${HOME}/Downloads/AMIRSLAM.bag.pbstream', include_unfinished_submaps: false}"
+
+# save octomap .ot
+rosrun octomap_server octomap_saver -f AMIRSLAM.ot
+
+# save pointcloud map .pcd
+rosrun pcl_ros pointcloud_to_pcd input:=/map3d 
+
+# save new constraint and pose array as .pkl
+rosservice call /save_amir_slam_to_file "{}" 
+```
+
+Load mapping result:
+```
+roslaunch octomap_server result_amir_mit.launch 
+python amirslam_loader.py 
+
+rosrun pcl_ros pcd_to_pointcloud AMIRSLAM.pcd  _frame_id:=/map cloud_pcd:=/map_3d
+```
 
 ## 4. System Overview & Algorithm Walkthrough for Tuning
 
