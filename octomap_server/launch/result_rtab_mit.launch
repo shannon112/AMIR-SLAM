@@ -1,0 +1,39 @@
+<launch>
+    <arg name="map_pcd" default="/home/shannon/Documents/master_thesis/rtab_rgbd/cloud005.pcd"/>
+    <!--arg name="map_pcd" default="/home/shannon/Documents/master_thesis/rtab_odom/cloud005.pcd"/-->
+
+    <arg name="map_ot" default="/home/shannon/Documents/master_thesis/v3/AMIRSLAM.ot"/>
+
+    <!--Launch amir map transformation-->
+    <node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" args="0 0 0.954675 0 0 0 1 map map_3d 100" />
+
+    <!--load pcd point cloud map-->
+    <node pkg="pcl_ros" type="pcd_to_pointcloud" name="pcd_to_pointcloud" args="$(arg map_pcd)" respawn="true">
+        <param name="frame_id" value="map" />
+        <remap from="cloud_pcd" to="/map_3d" />
+    </node>
+
+    <!--Launch amir map refinement-->
+    <node pkg="nodelet" type="nodelet" name="pcl_manager" args="manager" output="screen" />
+    <!-- Run a passthrough filter to clean NaNs -->
+    <node pkg="nodelet" type="nodelet" name="passthrough" args="load pcl/PassThrough pcl_manager" output="screen">
+        <remap from="~input" to="/map_3d" />
+        <rosparam>
+        filter_field_name: z
+        filter_limit_min: -10
+        filter_limit_max: 4.204675
+        filter_limit_negative: False
+        </rosparam>
+    </node>
+
+    <!--3D octomap view-->
+    <node pkg="octomap_server" type="octomap_color_server_node" name="octomap_server">
+        <param name="resolution" value="0.05" />
+        <param name="frame_id" type="string" value="map" />
+        <remap from="cloud_in" to="/passthrough/output" />
+    </node>
+
+    <node name="rviz" pkg="rviz" type="rviz"
+        args="-d $(find cartographer_ros)/configuration_files/demo_2d.rviz" />
+
+</launch>

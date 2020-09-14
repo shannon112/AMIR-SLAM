@@ -1,0 +1,64 @@
+<launch>
+    <arg name="map_pkl" default="/home/shannon/Documents/master_thesis/amir_v3/amirslam_params.pkl"/>
+    <arg name="map_pbstream" default="/home/shannon/Documents/master_thesis/amir_v3/AMIRSLAM.bag.pbstream"/>
+    <arg name="map_pcd" default="/home/shannon/Documents/master_thesis/amir_v3/AMIRSLAM.pcd"/>
+    <arg name="map_ot" default="/home/shannon/Documents/master_thesis/amir_v3/AMIRSLAM.ot"/>
+
+    <!--Launch cartographer state-->
+    <arg name="lua_filename_local" default="mit_stata_2d.lua"/>
+    <node name="cartographer" pkg="cartographer_ros"
+        type="cartographer_node" args="
+            -configuration_directory $(find cartographer_ros)/configuration_files
+            -configuration_basename $(arg lua_filename_local)
+            -load_state_filename $(arg map_pbstream)">
+    </node>
+
+    <!--Launch cartographer grid map transformer-->
+    <node name="cartographer_occupancy_grid_node" pkg="cartographer_ros"
+        type="cartographer_occupancy_grid_node" args="-resolution 0.05">
+        <remap from="map" to="/map" />
+    </node>
+
+    <!--Launch amir state-->
+    <node pkg="octomap_server" type="amirslam_loader.py" name="amirslam_loader"/>
+
+    <!--Launch amir map transformation-->
+    <node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" args="0 0 0.954675 0 0 0 1 map map_3d 100" />
+
+    <!--load pcd point cloud map-->
+    <node pkg="pcl_ros" type="pcd_to_pointcloud" name="pcd_to_pointcloud" args="$(arg map_pcd)" respawn="true">
+        <param name="frame_id" value="map_3d" />
+        <remap from="cloud_pcd" to="/map_3d" />
+    </node>
+
+    <!--Launch amir map refinement-->
+    <node pkg="nodelet" type="nodelet" name="pcl_manager" args="manager" output="screen" />
+    <!-- Run a passthrough filter to clean NaNs -->
+    <node pkg="nodelet" type="nodelet" name="passthrough" args="load pcl/PassThrough pcl_manager" output="screen">
+        <remap from="~input" to="/map_3d" />
+        <rosparam>
+        filter_field_name: z
+        filter_limit_min: -10
+        filter_limit_max: 1.25
+        filter_limit_negative: False
+        </rosparam>
+    </node>
+    <node pkg="nodelet" type="nodelet" name="statisticaloutlierremoval" args="load pcl/StatisticalOutlierRemoval pcl_manager" output="screen">
+        <remap from="~input" to="/passthrough/output" />
+        <rosparam>
+        stddev: 1
+        mean_k: 30
+        </rosparam>
+    </node>
+
+    <!--3D octomap view-->
+    <node pkg="octomap_server" type="octomap_color_server_node" name="octomap_server">
+        <param name="resolution" value="0.05" />
+        <param name="frame_id" type="string" value="map_3d" />		
+        <remap from="cloud_in" to="/statisticaloutlierremoval/output" />
+    </node>
+
+    <node name="rviz" pkg="rviz" type="rviz"
+        args="-d $(find cartographer_ros)/configuration_files/demo_2d.rviz" />
+
+</launch>
