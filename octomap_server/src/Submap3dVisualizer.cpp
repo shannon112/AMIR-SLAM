@@ -354,45 +354,46 @@ void Submap3dVisualizer::refineCallback(const std_msgs::Empty::ConstPtr& command
 void Submap3dVisualizer::insertSubmap3dposeCallback(const geometry_msgs::PoseArray::ConstPtr& pose_array){
   ros::WallTime startTime = ros::WallTime::now();
   ROS_INFO("pointcloud get pose array sized %zu", pose_array->poses.size());
-  unsigned node_id_now = pose_array->poses.size();
-  double total_elapsed = (ros::WallTime::now() - startTime).toSec();
-
-  // for pose array based constraint visualization
-  m_Poses.clear();
-  for (int i=0; i<pose_array->poses.size(); ++i)
-    m_Poses.push_back(pose_array->poses[i]);
-
-  if (refined) return;
-
-  //update global map, tuning with live pose_array from cartographer
-  int counter = 0;
-  int base_map_id = 0;
-  for (unsigned i=0; i<node_id_now; ++i){
-    auto nodeExist = NodeGraph.find(i+1);
-    if (nodeExist!=NodeGraph.end()){
-      PCLPointCloud temp = *(nodeExist->second.second);
-      Pose nowPose = pose_array->poses[i];
-
-      Eigen::Quaterniond nowPose_q(nowPose.orientation.w, nowPose.orientation.x, nowPose.orientation.y, nowPose.orientation.z);
-      Eigen::Vector3d nowPose_v(nowPose.position.x, nowPose.position.y, nowPose.position.z);
-      Eigen::Matrix3d nowPose_R = nowPose_q.toRotationMatrix();
-      Eigen::Matrix4d Trans; 
-      Trans.setIdentity();
-      Trans.block<3,3>(0,0) = nowPose_R;
-      Trans.block<3,1>(0,3) = nowPose_v;
-      pcl::transformPointCloud(temp, temp, Trans);
-
-      *m_global_pc_map += temp;
-    }//if node exist
-  }//for
 
   //publish pointcloud globalmap
-  if ((ros::WallTime::now()-previousTime).toSec() > 2){
+  if ((ros::WallTime::now()-previousTime).toSec() > 10){
+
+    unsigned node_id_now = pose_array->poses.size();
+
+    // for pose array based constraint visualization
+    m_Poses.clear();
+    for (int i=0; i<pose_array->poses.size(); ++i)
+      m_Poses.push_back(pose_array->poses[i]);
+
+    if (refined) return;
+
+    //update global map, tuning with live pose_array from cartographer
+    int counter = 0;
+    int base_map_id = 0;
+    for (unsigned i=0; i<node_id_now; ++i){
+      auto nodeExist = NodeGraph.find(i+1);
+      if (nodeExist!=NodeGraph.end()){
+        PCLPointCloud temp = *(nodeExist->second.second);
+        Pose nowPose = pose_array->poses[i];
+
+        Eigen::Quaterniond nowPose_q(nowPose.orientation.w, nowPose.orientation.x, nowPose.orientation.y, nowPose.orientation.z);
+        Eigen::Vector3d nowPose_v(nowPose.position.x, nowPose.position.y, nowPose.position.z);
+        Eigen::Matrix3d nowPose_R = nowPose_q.toRotationMatrix();
+        Eigen::Matrix4d Trans; 
+        Trans.setIdentity();
+        Trans.block<3,3>(0,0) = nowPose_R;
+        Trans.block<3,1>(0,3) = nowPose_v;
+        pcl::transformPointCloud(temp, temp, Trans);
+
+        *m_global_pc_map += temp;
+      }//if node exist
+    }//for
+
     previousTime = ros::WallTime::now();
     publishPCmap3d(pose_array->header.stamp);
     m_global_pc_map->clear();
+    ROS_INFO("Cleared pointcloud map");
   }
-  ROS_INFO("Cleared pointcloud map");
 }
 
 
@@ -406,6 +407,8 @@ float Submap3dVisualizer::TwoVectorDistance(const Eigen::Vector4f &pose_target, 
 
 // octomap map building
 void Submap3dVisualizer::insertCloudCallback(const geometry_msgs::PoseArray::ConstPtr& pose_array){
+  //disable octomap
+  /*
   ros::WallTime startTime = ros::WallTime::now();
   ROS_INFO("octomap get pose array sized %zu", pose_array->poses.size());
   unsigned node_id_now = pose_array->poses.size();
@@ -455,6 +458,7 @@ void Submap3dVisualizer::insertCloudCallback(const geometry_msgs::PoseArray::Con
   m_gridmap.info.origin.position.x = 0.0;
   m_gridmap.info.origin.position.y = 0.0;
   ROS_INFO("Cleared octomap & projected 2d map");
+  */
 
   return;
 }

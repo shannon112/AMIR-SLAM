@@ -12,7 +12,7 @@ int main(int argc, char** argv){
   ros::spinOnce();
 
   try{
-    ros::MultiThreadedSpinner spinner(4);
+    ros::MultiThreadedSpinner spinner(3);
     spinner.spin();
     //ros::spin();
   }catch(std::runtime_error& e){

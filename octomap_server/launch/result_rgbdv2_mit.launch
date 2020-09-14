@@ -1,6 +1,6 @@
 <launch>
-    <arg name="map_pcd" default="/home/shannon/Documents/master_thesis/rgbdv2_odom/short/quicksave.pcd"/>
-    <arg name="map_ot" default="/home/shannon/Documents/master_thesis/rgbdv2_odom/short/quicksave.ot"/>
+    <arg name="map_pcd" default="/home/shannon/Documents/master_thesis/rgbdv2_odom/again/quicksave.pcd"/>
+    <arg name="map_ot" default="/home/shannon/Documents/master_thesis/rgbdv2_odom/again/quicksave.ot"/>
 
     <!--arg name="map_ot" default="/home/shannon/Documents/master_thesis/rgbdv2_rgbd/quicksave.ot"/>
     <arg name="map_pcd" default="/home/shannon/Documents/master_thesis/rgbdv2_rgbd/quicksave.pcd"/-->

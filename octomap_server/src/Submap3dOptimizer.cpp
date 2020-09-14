@@ -400,71 +400,75 @@ void Submap3dOptimizer::subNodeEdgeCallback(const geometry_msgs::PoseArray::Cons
 
 // constraint building, sub nodemap poses callback, constraint tag to ConstraintGraph
 void Submap3dOptimizer::subNodePoseCallback(const geometry_msgs::PoseArray::ConstPtr& pose_array){
-  ros::WallTime startTime = ros::WallTime::now();
-  double total_elapsed = (ros::WallTime::now() - startTime).toSec();
-  ROS_INFO("get pose array sized %zu", pose_array->poses.size());
-  unsigned node_id_now = pose_array->poses.size();
-  
-  // for pose array based constraint visualization
-  //m_Poses.clear();
-  //for (int i=0; i<pose_array->poses.size(); ++i)
-  //  m_Poses.push_back(pose_array->poses[i]);
 
-  // pose graph add vertex 
-  for (unsigned i=0; i<node_id_now; ++i){
-    Pose nowPose = pose_array->poses[i];
-    InsertVertex(i, nowPose);
+  if ((ros::WallTime::now()-previousTime).toSec() > 3){
+    ros::WallTime startTime = ros::WallTime::now();
+    double total_elapsed = (ros::WallTime::now() - startTime).toSec();
+    ROS_INFO("get pose array sized %zu", pose_array->poses.size());
+    unsigned node_id_now = pose_array->poses.size();
+    
+    // for pose array based constraint visualization
+    //m_Poses.clear();
+    //for (int i=0; i<pose_array->poses.size(); ++i)
+    //  m_Poses.push_back(pose_array->poses[i]);
+
+    // pose graph add vertex 
+    for (unsigned i=0; i<node_id_now; ++i){
+      Pose nowPose = pose_array->poses[i];
+      InsertVertex(i, nowPose);
+    }
+
+    // pose graph add constraint: each begin_pose(i-1) and end_pose(i) from pose array which maintain by cartographer
+    for (unsigned i=0; i<node_id_now; ++i){
+      if (i==0) continue; //no edge
+      Pose nowPose = pose_array->poses[i];
+      Pose prePose = pose_array->poses[i-1];
+      Pose deltaPose = Pose();
+
+      Eigen::Quaterniond nowPose_q(nowPose.orientation.w, nowPose.orientation.x, nowPose.orientation.y, nowPose.orientation.z);
+      Eigen::Quaterniond prePose_q(prePose.orientation.w, prePose.orientation.x, prePose.orientation.y, prePose.orientation.z);
+      Eigen::Matrix3d prePose_R = prePose_q.toRotationMatrix();
+      Eigen::Vector3d deltaPose_v (nowPose.position.x - prePose.position.x, 
+          nowPose.position.y - prePose.position.y, nowPose.position.z - prePose.position.z);
+      Eigen::Vector3d result_v = prePose_R.transpose()*deltaPose_v;
+      deltaPose.position.x = result_v.x();
+      deltaPose.position.y = result_v.y();
+      deltaPose.position.z = result_v.z();
+
+      Eigen::Quaterniond deltaPose_q = prePose_q.inverse()*nowPose_q;
+      deltaPose.orientation.x = deltaPose_q.x();
+      deltaPose.orientation.y = deltaPose_q.y();
+      deltaPose.orientation.z = deltaPose_q.z();
+      deltaPose.orientation.w = deltaPose_q.w();
+
+      double *temp_info_matrix = new double[21]{1,0,0,0,0,0,1,0,0,0,0,1,0,0,0,4000,0,0,4000,0,4000};
+      InsertConstraint(i-1, i, deltaPose, temp_info_matrix);
+    }
+
+    // pose graph add constraint: neighbor pose from icp
+    for (auto iter=constraints_icp.begin(); iter!=constraints_icp.end(); ++iter){
+      constraints.push_back(*iter);
+    }
+
+    std::cout << "Finished pose graph building" << '\n';
+    std::cout << "Number of poses: " << poses.size() << '\n';
+    std::cout << "Number of constraints: " << constraints.size() << '\n';
+
+    // solving pose graph
+    ceres::Problem problem;
+    ceres::examples::BuildOptimizationProblem(constraints, &poses, &problem);
+    ceres::examples::SolveOptimizationProblem(&problem);
+
+    // pub optimized result
+    publishPoseArray();
+    publishConstriant();
+
+    // clean pose graph
+    poses.clear();
+    constraints.clear();
+    //ConstraintCheck.clear();
+    previousTime = ros::WallTime::now();
   }
-
-  // pose graph add constraint: each begin_pose(i-1) and end_pose(i) from pose array which maintain by cartographer
-  for (unsigned i=0; i<node_id_now; ++i){
-    if (i==0) continue; //no edge
-    Pose nowPose = pose_array->poses[i];
-    Pose prePose = pose_array->poses[i-1];
-    Pose deltaPose = Pose();
-
-    Eigen::Quaterniond nowPose_q(nowPose.orientation.w, nowPose.orientation.x, nowPose.orientation.y, nowPose.orientation.z);
-    Eigen::Quaterniond prePose_q(prePose.orientation.w, prePose.orientation.x, prePose.orientation.y, prePose.orientation.z);
-  	Eigen::Matrix3d prePose_R = prePose_q.toRotationMatrix();
-	  Eigen::Vector3d deltaPose_v (nowPose.position.x - prePose.position.x, 
-        nowPose.position.y - prePose.position.y, nowPose.position.z - prePose.position.z);
-    Eigen::Vector3d result_v = prePose_R.transpose()*deltaPose_v;
-    deltaPose.position.x = result_v.x();
-    deltaPose.position.y = result_v.y();
-    deltaPose.position.z = result_v.z();
-
-    Eigen::Quaterniond deltaPose_q = prePose_q.inverse()*nowPose_q;
-    deltaPose.orientation.x = deltaPose_q.x();
-    deltaPose.orientation.y = deltaPose_q.y();
-    deltaPose.orientation.z = deltaPose_q.z();
-    deltaPose.orientation.w = deltaPose_q.w();
-
-    double *temp_info_matrix = new double[21]{1,0,0,0,0,0,1,0,0,0,0,1,0,0,0,4000,0,0,4000,0,4000};
-    InsertConstraint(i-1, i, deltaPose, temp_info_matrix);
-  }
-
-  // pose graph add constraint: neighbor pose from icp
-  for (auto iter=constraints_icp.begin(); iter!=constraints_icp.end(); ++iter){
-    constraints.push_back(*iter);
-  }
-
-  std::cout << "Finished pose graph building" << '\n';
-  std::cout << "Number of poses: " << poses.size() << '\n';
-  std::cout << "Number of constraints: " << constraints.size() << '\n';
-
-  // solving pose graph
-  ceres::Problem problem;
-  ceres::examples::BuildOptimizationProblem(constraints, &poses, &problem);
-  ceres::examples::SolveOptimizationProblem(&problem);
-
-  // pub optimized result
-  publishPoseArray();
-  publishConstriant();
-
-  // clean pose graph
-  poses.clear();
-  constraints.clear();
-  //ConstraintCheck.clear();
 }
 
 bool Submap3dOptimizer::TwoVectorDistance3d(const Eigen::Vector3d &pose_target, const Eigen::Vector3d &pose_source){

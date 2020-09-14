@@ -1,0 +1,23 @@
+<launch>
+    <arg name="map_pcd" default="/home/shannon/Documents/iros_data_result/6_blam/blam.pcd"/>
+
+    <!--load pcd point cloud map-->
+    <node pkg="pcl_ros" type="pcd_to_pointcloud" name="pcd_to_pointcloud" args="$(arg map_pcd)">
+        <param name="frame_id" value="map" />
+    </node>
+
+    <!--3D octomap view-->
+    <node pkg="octomap_server" type="octomap_color_server_node" name="octomap_server">
+        <param name="resolution" value="0.05" />
+        <param name="frame_id" type="string" value="map" />		
+        <remap from="cloud_in" to="/cloud_pcd" />
+        <param name="pointcloud_min_z" value="0.05" />
+        <param name="pointcloud_max_z" value="2.5" />
+        <param name="occupancy_min_z" value="0.05" />
+        <param name="occupancy_max_z" value="2.5" />
+    </node>
+
+    <!--rviz-->
+    <node name="rviz" pkg="rviz" type="rviz"
+        args="-d $(find cartographer_ros)/configuration_files/demo_2d.rviz" />
+</launch>

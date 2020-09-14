@@ -342,13 +342,13 @@ void Submap3dServer::insertCloudCallback(const sensor_msgs::PointCloud2::ConstPt
   //depth filter, as kinectv1 spec max depth range is around 3.5~4m, min is 0.8m
   pcl::PassThrough<PCLPoint> pass_x;
   pass_x.setFilterFieldName("x");
-  pass_x.setFilterLimits(-4, 4);
+  pass_x.setFilterLimits(-5, 5);
   pcl::PassThrough<PCLPoint> pass_y;
   pass_y.setFilterFieldName("y");
-  pass_y.setFilterLimits(-4, 4);
+  pass_y.setFilterLimits(-5, 5);
   pcl::PassThrough<PCLPoint> pass_z_p;
   pass_z_p.setFilterFieldName("z");
-  pass_z_p.setFilterLimits(-4, 4);
+  pass_z_p.setFilterLimits(-5, 5);
   pcl::PassThrough<PCLPoint> pass_z_n;
   pass_z_n.setFilterFieldName("z");
   pass_z_n.setFilterLimits(-0.8, 0.8);
@@ -440,7 +440,8 @@ void Submap3dServer::publishNodemap3d(const ros::Time& rostime, const PCLPointCl
   int index_now = (int)(m_SizePoses)-1; // start from 1 = corresponding len of pose array
   
   if (fPublishNodemap3d){
-    if (index_now>2640) return;
+    if (index_now>620) return;
+    if (index_now>5 && index_now<30) return;
     octomap_server::PosePointCloud2 pcloud;
     pcloud.header.frame_id = m_worldFrameId;//m_worldFrameId;//
     pcloud.header.stamp = rostime;

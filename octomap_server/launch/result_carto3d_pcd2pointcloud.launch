@@ -1,0 +1,47 @@
+<launch>
+    <arg name="map_pcd" default="/home/shannon/Documents/iros_data_result/1_carto3d/iros_2-only-lidar-odom.bag_points.pcd"/>
+    <arg name="map_yaml" default="/home/shannon/Documents/iros_data_result/1_carto3d/iros_2_carto3d.yaml"/>
+
+    <!--Launch cartographer localization-->
+    <arg name="map_filename"/>
+    <arg name="lua_filename_local" default="sghero_allcarto_real_3d.lua"/>
+    <node name="cartographer" pkg="cartographer_ros"
+        type="cartographer_node" args="
+            -configuration_directory $(find cartographer_ros)/configuration_files
+            -configuration_basename $(arg lua_filename_local)
+            -load_state_filename $(arg map_filename)">
+    </node>
+    <!--Launch cartographer grid map transformer-->
+    <node name="cartographer_occupancy_grid_node" pkg="cartographer_ros"
+        type="cartographer_occupancy_grid_node" args="-resolution 0.05">
+    <remap from="map" to="/map" />
+    </node>
+
+    <!--load pcd point cloud map-->
+    <node pkg="pcl_ros" type="pcd_to_pointcloud" name="pcd_to_pointcloud" args="$(arg map_pcd)">
+        <param name="frame_id" value="map" />
+    </node>
+
+    <!--3D octomap view-->
+    <node pkg="octomap_server" type="octomap_server_node" name="octomap_server">
+        <param name="resolution" value="0.05" />
+        <param name="frame_id" type="string" value="map" />		
+        <remap from="cloud_in" to="/cloud_pcd" />
+        <param name="pointcloud_min_z" value="0.05" />
+        <param name="pointcloud_max_z" value="2." />
+        <param name="occupancy_min_z" value="0.05" />
+        <param name="occupancy_max_z" value="2." />
+        <param name="sensor_model/hit" value="0.9"/>
+        <param name="sensor_model/miss" value="0.4"/>
+        <param name="sensor_model/min" value="0.12"/>
+        <param name="sensor_model/max" value="0.97"/>
+    </node>
+
+    <!--2D grid map view-->
+    <!--node name="map_server" pkg="map_server" type="map_server" args="$(arg map_yaml)" /-->
+
+    <!--rviz-->
+    <node name="rviz" pkg="rviz" type="rviz"
+        args="-d $(find cartographer_ros)/configuration_files/demo_2d.rviz" />
+
+</launch>

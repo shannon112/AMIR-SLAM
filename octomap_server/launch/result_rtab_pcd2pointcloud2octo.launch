@@ -1,0 +1,32 @@
+<launch>
+    <!--arg name="map_yaml" default="/home/shannon/Documents/iros_data_result/3_rtab_hand/iros_2_rtab_hand.yaml"/>
+    <arg name="map_pcd" default="/home/shannon/Documents/iros_data_result/3_rtab_hand/iros_2_rtab_hand.pcd"/-->
+    <arg name="map_yaml" default="/home/shannon/Documents/iros_data_result/2_rtab_odom/iros_2_rtab_odom.yaml"/>
+    <arg name="map_pcd" default="/home/shannon/Documents/iros_data_result/2_rtab_odom/iros_2_rtab_odom.pcd"/>
+
+
+    <!--load pcd point cloud map-->
+    <node pkg="pcl_ros" type="pcd_to_pointcloud" name="pcd_to_pointcloud" args="$(arg map_pcd)">
+        <param name="frame_id" value="map" />
+    </node>
+
+    <!--3D octomap view-->
+    <node pkg="octomap_server" type="octomap_color_server_node" name="octomap_server">
+        <param name="resolution" value="0.05" />
+        <param name="frame_id" type="string" value="map" />		
+        <remap from="cloud_in" to="/cloud_pcd" />
+        <param name="pointcloud_min_z" value="0.05" />
+        <param name="pointcloud_max_z" value="2.5" />
+        <param name="occupancy_min_z" value="0.05" />
+        <param name="occupancy_max_z" value="2.5" />
+    </node>
+    <node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" args="0 0 -2 0 -0.342 0  0.940 map map_rotate 100" />
+
+    <!--2D grid map view-->
+    <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_yaml)" />
+
+    <!--rviz-->
+    <node name="rviz" pkg="rviz" type="rviz"
+        args="-d $(find cartographer_ros)/configuration_files/demo_2d.rviz" />
+
+</launch>

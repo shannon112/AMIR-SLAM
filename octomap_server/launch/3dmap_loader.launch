@@ -1,0 +1,9 @@
+<launch>
+    <!--3D octomap-->
+    <arg name="map_ot" default="/home/shannon/Documents/master_thesis/ours/amir_second/amirslam_fixed.ot"/>
+    <!--node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" args="0 0 0.5 0 0 0 1 map map_oct 100" /-->
+    <!--static_transform_publisher x y z qx qy qz qw frame_id child_frame_id  period_in_ms -->
+    <node pkg="octomap_server" type="octomap_color_server_node" name="octomap_server" args="$(arg map_ot)">
+        <param name="frame_id" type="string" value="/map" />		
+    </node>
+</launch>
