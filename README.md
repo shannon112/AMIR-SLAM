@@ -21,6 +21,7 @@ Build from source:
 - ceres-solver: https://github.com/shannon112/ceres-solver/tree/testing_1.13.0
 - ros_odometry_visualizer: https://github.com/shannon112/ros_odometry_visualizer/tree/master (for ploting fig)
 - rgbdslamv2: https://github.com/shannon112/rgbdslamv2_ros_d435/tree/kinetic  (for comparison)
+- BLAM: https://github.com/erik-nelson/blam/tree/master (for comparison)
 - scorpio_v2: https://github.com/shannon112/scorpio_v2/tree/master (for real robot)
 - moveit_extension: https://github.com/shannon112/Moveit-External-Octomap-Updater/tree/master (for autonomous mobile manipulation)
 
