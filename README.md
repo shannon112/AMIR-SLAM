@@ -1,9 +1,7 @@
 # AMIR-SLAM: Autonomous Mobile Industrial Robot Simultaneous Localization and Mapping
 
 An autonomous mobile industrial robot (AMIR) a.k.a. mobile manipulator, with the eye-in-hand RGB-D camera setting, is able to implement ubiquitous and adaptive mobile manipulation task in a bunch of intelligent services. To perform the autonomous mobile manipulation, the 3D perception of an environment is necessary for the motion planning algorithm to compute collision-free trajectory. We specifically design a 3D SLAM architecture for mobile manipulators, fusing data from sensors on the robot such as 2D laser scan, inertial measurement unit (IMU) data, RGB-D camera data, odometric data and kinematic data to compute an optimized pose, 2D occupancy grid map and 3D occupancy grid map (octomap). Moreover, we also integrate our system with motion planning system, making the robot avoid obstacles autonomously during mobile manipulation in the demonstrations.  
-  
-The SLAM architecture is based on 2D Cartographer SLAM and extended to have a 3D capability. According to the optimized footprint poses maintained by Cartographer pose graph, we use the kinematic data to transform filtered RGB-D point clouds, building up local submaps which consist of several point clouds by performing the Iterative Closest Point (ICP) technique. To achieve global consistency, the approximate detection is applied to insert a new constraint between two close 3D submap into the pose graph. The non-linear optimization is then conducted on the pose graph with constraints from 3D submaps and Cartographer using Ceres library. Finally, we compose all the submaps by transforming them into world coordinate according to the new optimized poses, getting global 2D and 3D occupancy grid maps.  
-  
+    
 Keywords: SLAM, 3D Reconstruction, Multi-Sensor Fusion, Mobile Manipulation, Autonomous Mobile Industrial Robot, Obstacle Avoidance, Robot Operating System  
   
 <img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/system_overview.png" width="840"><img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/mapping_result.png" width="840">
@@ -80,6 +78,7 @@ rosrun pcl_ros pcd_to_pointcloud AMIRSLAM.pcd  _frame_id:=/map cloud_pcd:=/map_3
 ```
 
 ## 4. System Overview & Algorithm Walkthrough for Tuning
+The SLAM architecture is based on 2D Cartographer SLAM and extended to have a 3D capability. According to the optimized footprint poses maintained by Cartographer pose graph, we use the kinematic data to transform filtered RGB-D point clouds, building up local submaps which consist of several point clouds by performing the Iterative Closest Point (ICP) technique. To achieve global consistency, the approximate detection is applied to insert a new constraint between two close 3D submap into the pose graph. The non-linear optimization is then conducted on the pose graph with constraints from 3D submaps and Cartographer using Ceres library. Finally, we compose all the submaps by transforming them into world coordinate according to the new optimized poses, getting global 2D and 3D occupancy grid maps.  
 
 <img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/flow_chart_high_level.png" height="200">　<img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/flow_chart_low_level.png" height="200">
 
