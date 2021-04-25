@@ -1,10 +1,10 @@
 # AMIR-SLAM: Autonomous Mobile Industrial Robot Simultaneous Localization and Mapping
 
-<img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/system_overview.png?token=AF244QECXSZSGSA4QIKZMY27MW5NE" width="640">
+<img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/system_overview.png" width="640">
 
 discription
 
-<img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/mapping_result.png?token=AF244QDAVMPGDCUASHDBAXK7MW5S6" width="840">
+<img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/mapping_result.png" width="840">
 
 ## Related Publication
 *Since a lot of time and effort has gone into the development, please cite at least one of the following publications if you are using our work for your own research:*
@@ -76,7 +76,7 @@ rosrun pcl_ros pcd_to_pointcloud AMIRSLAM.pcd  _frame_id:=/map cloud_pcd:=/map_3
 
 ## 4. System Overview & Algorithm Walkthrough for Tuning
 
-<img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/flow_chart_high_level.png?token=AF244QB56G7ACOJAAUJBCB27MW5VW" width="410">　<img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/flow_chart_low_level.png?token=AF244QC7TNT2MOWBN23J7C27MW5V2" width="410">
+<img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/flow_chart_high_level.png" width="410">　<img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/flow_chart_low_level.png" width="410">
 
 ## License
 All the packages are distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
