@@ -8,14 +8,14 @@ Keywords: SLAM, 3D Reconstruction, Multi-Sensor Fusion, Mobile Manipulation, Aut
   
 <img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/system_overview.png" width="840"><img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/mapping_result.png" width="840">
 
-### *** ⚠️Warning⚠️ This project is not completed, the code is unarranged and the optimization is needed ***
-
 ## Related Publication
 *Since a lot of time and effort has gone into the development, please cite at least one of the following publications if you are using our work for your own research:*
 - R. C. Luo, S. L. Lee, Y. C. Wen and C. H. Hsu, "Modular ROS Based Autonomous Mobile Industrial Robot System for Automated Intelligent Manufacturing Applications," 2020 IEEE/ASME International Conference on Advanced Intelligent Mechatronics (AIM), Boston, MA, USA, 2020, pp. 1673-1678, doi: 10.1109/AIM43001.2020.9158800. pdf: https://ieeexplore.ieee.org/document/9158800, video: https://youtu.be/2rha26UyMa8   
 - S. L. Lee, "Autonomous Mobile Industrial Robot with Multi-Sensor Fusion Based Simultaneous Localization and Mapping for Intelligent Service Applications," 2020 National Taiwan University Master Thesis, Taipei, Taiwan, 2020, doi: 10.6342/NTU202003847. pdf: https://hdl.handle.net/11296/q79yre, video: https://youtu.be/Ap8Sr-6QII4, slide: https://www.slideshare.net/secret/C2ACrcWkD41477
 
 - R. C. Luo and S. L. Lee, "Multi-Sensor Based Simultaneous Localization and Mapping System for Autonomous Mobile Industrial Robotic Applications," in IEEE Access, 2020. (Submitted)
+
+### *** ⚠️Warning⚠️ This project is not completed, the code is unarranged and the optimization is needed ***
 
 ## 1. Prerequisites
 
