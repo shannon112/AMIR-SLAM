@@ -84,11 +84,18 @@ rosrun pcl_ros pcd_to_pointcloud AMIRSLAM.pcd  _frame_id:=/map cloud_pcd:=/map_3
 <img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/flow_chart_high_level.png" height="200">　<img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/flow_chart_low_level.png" height="200">
 
 ## 5. Evaluation
-We perform the experiments, firstly with an ablation comparison on our architecture, showing how each mechanism improves the performance of the result. Secondly compared with other state-of-art methods with the public SLAM dataset as well as using dataset collected in our own experiment. The result shows that our approach can generate more accurate and more robust maps than other available methods implemented to a mobile manipulator. Third, we demonstrate an autonomous mobile manipulation solution based on our SLAM system, comparing to other available methods without it. The result shows that our system successfully works and enhances motion planning with obstacle avoidance in more comprehensive and convenience way. Last but not the least, we successfully demonstrate an intelligent service scenario of multi-station robotic delivery with our approach from SLAM to autonomous mobile manipulation.
+We perform the experiments, firstly with an ablation comparison on our architecture, showing how each mechanism improves the performance of the result. Secondly compared with other state-of-art methods with the public SLAM dataset as well as using dataset collected in our own experiment. The result shows that our approach can generate more accurate and more robust maps than other available methods implemented to a mobile manipulator. 
+
+<img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/evaluation.png" width="840">　
+
+## 6. Demonstration
+We demonstrate an autonomous mobile manipulation solution based on our SLAM system, comparing to other available methods without it. The result shows that our system successfully works and enhances motion planning with obstacle avoidance in more comprehensive and convenience way. Last but not the least, we successfully demonstrate an intelligent service scenario of multi-station robotic delivery with our approach from SLAM to autonomous mobile manipulation.
+
+<img src="https://raw.githubusercontent.com/shannon112/AMIR-SLAM/master/doc/demonstration.png" width="840">　
 
 ## License
 All the packages are distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
 AMIR-SLAM is licenced under Apache-2.0 License.
 
 ## Acknowledgement
-AMIR-SLAM is based on Cartographer SLAM (Hess, Wolfgang, Damon Kohler, Holger Rapp, and Daniel Andor. "Real-time loop closure in 2D LIDAR SLAM.")
+AMIR-SLAM is based on Cartographer SLAM (Hess, Wolfgang, Damon Kohler, Holger Rapp, and Daniel Andor. "Real-time loop closure in 2D LIDAR SLAM."). AMIR-Extension coed is based on octomap-server coding structure.
